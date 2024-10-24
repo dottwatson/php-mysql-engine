@@ -6,6 +6,7 @@ namespace Vimeo\MysqlEngine;
  */
 final class DataType
 {
+    const JOSN = 'JSON';
     const TINYINT = 'TINYINT';
     const SMALLINT = 'SMALLINT';
     const INT = 'INT';
@@ -37,6 +38,7 @@ final class DataType
     const TIMESTAMP = 'TIMESTAMP';
     const DECIMAL = 'DECIMAL';
     const NUMERIC = 'NUMERIC';
+    const BOOLEAN = 'BOOLEAN';
 
     private function __construct()
     {

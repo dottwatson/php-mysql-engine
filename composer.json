@@ -17,7 +17,9 @@
     "php": "^7.1|^8",
     "ext-pdo": "*",
     "nyholm/dsn": "^2.0",
-    "symfony/polyfill-php73": "^1.22"
+    "symfony/polyfill-php73": "^1.22",
+    "dottwatson/simple-data":"@dev",
+    "justinrainbow/json-schema":"*"
   },
   "autoload": {
     "psr-4": {

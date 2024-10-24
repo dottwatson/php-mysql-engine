@@ -66,9 +66,8 @@ final class SelectParser
         if ($this->tokens[$this->pointer]->value !== 'SELECT') {
             throw new ParserException("Parser error: expected SELECT");
         }
-
+        
         $query = $this->parseMainSelect();
-
         if (\array_key_exists($this->pointer, $this->tokens)) {
             $next = $this->tokens[$this->pointer] ?? null;
             while ($next !== null
@@ -103,7 +102,6 @@ final class SelectParser
 
         while ($this->pointer < $count) {
             $token = $this->tokens[$this->pointer];
-
             switch ($token->type) {
                 case TokenType::NUMERIC_CONSTANT:
                 case TokenType::NULL_CONSTANT:
@@ -129,6 +127,7 @@ final class SelectParser
 
                     $expression_parser = new ExpressionParser($this->tokens, $this->pointer - 1);
                     $start = $this->pointer;
+
                     list($this->pointer, $expression) = $expression_parser->buildWithPointer();
                     if (!$expression instanceof ColumnExpression && !$expression instanceof ConstantExpression) {
                         $name = '';

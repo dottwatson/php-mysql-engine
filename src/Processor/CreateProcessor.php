@@ -240,7 +240,7 @@ final class CreateProcessor
     }
 
     /**
-     * @return Column\BigInt|Column\IntColumn|Column\MediumInt|Column\SmallInt|Column\TinyInt
+     * @return Column\BigInt|Column\IntColumn|Column\MediumInt|Column\SmallInt|Column\TinyInt|Column\Boolean
      */
     private static function getIntegerDefinitionColumn(Query\MysqlColumnType $stmt)
     {
@@ -249,6 +249,12 @@ final class CreateProcessor
         $display_width = (int) $stmt->length;
 
         switch (strtoupper($stmt->type)) {
+            case DataType::JSON:
+                return new Column\Json($unsigned, $display_width);
+                            
+            case DataType::BOOLEAN:
+                return new Column\Boolean($unsigned, $display_width);
+                            
             case DataType::TINYINT:
                 return new Column\TinyInt($unsigned, $display_width);
 

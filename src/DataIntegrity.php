@@ -204,6 +204,9 @@ final class DataIntegrity
         }
 
         switch ($php_type) {
+            case 'json':
+                return json_decode($value);
+            case 'boolean':
             case 'int':
                 return (int) $value;
 

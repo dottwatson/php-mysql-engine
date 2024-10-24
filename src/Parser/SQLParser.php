@@ -63,12 +63,14 @@ final class SQLParser
         '-' => true,
         '+' => true,
         '<<' => true,
+        '->>'=> true,
         '>>' => true,
         '&' => true,
         '|' => true,
         '=' => true,
         '<=>' => true,
         '>=' => true,
+        '->' => true,
         '>' => true,
         '<=' => true,
         '<' => true,
@@ -163,6 +165,7 @@ final class SQLParser
     {
         $tokens = (new SQLLexer())->lex($sql);
         $tokens = self::buildTokenListFromLexemes($tokens);
+
         $token = $tokens[0];
         if ($token->value === TokenType::PAREN) {
             $close = self::findMatchingParen(0, $tokens);
@@ -211,8 +214,21 @@ final class SQLParser
 
         $parameter_offset = 0;
 
-        foreach ($tokens as $i => [$token, $start]) {
+        for($i = 0;$i < $count;$i++){
+            [$token, $start] = $tokens[$i];
             $trimmed_token = \trim($token);
+
+            if($token === '-' && (isset($tokens[$i+1]) && \trim($tokens[$i+1][0]) == '>>')){
+                $out[] = new Token(TokenType::OPERATOR, '->>', $token.$tokens[$i+1][0], $start);
+                $i++;
+                continue;
+            }
+            elseif($token === '-' && isset($tokens[$i+1]) && \trim($tokens[$i+1][0]) == '>'){
+                $out[] = new Token(TokenType::OPERATOR, '->', $token.$tokens[$i+1][0], $start);
+                $i++;
+                continue;
+            }
+
 
             if ($trimmed_token === '' || $trimmed_token === '.') {
                 $k = \array_key_last($out);
@@ -222,6 +238,16 @@ final class SQLParser
                     $previous->value .= $trimmed_token;
                     $out[$k] = $previous;
                 }
+                continue;
+            }
+
+            if ($token === 'true') {
+                $out[] = new Token(TokenType::NUMERIC_CONSTANT, '1', $token, $start);
+                continue;
+            }
+
+            if ($token === 'false') {
+                $out[] = new Token(TokenType::NUMERIC_CONSTANT, '0', $token, $start);
                 continue;
             }
 
@@ -300,6 +326,7 @@ final class SQLParser
                     continue;
                 }
             } elseif ($token === '-' || $token === '+') {
+
                 $k = \array_key_last($out);
 
                 if ($k === null) {
@@ -387,6 +414,7 @@ final class SQLParser
                 $out[] = new Token(TokenType::IDENTIFIER, $token, $token, $start);
             }
         }
+
         return $out;
     }
 

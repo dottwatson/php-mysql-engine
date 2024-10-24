@@ -53,6 +53,8 @@ final class ExpressionParser
         '<' => 7,
         '<>' => 7,
         '!=' => 7,
+        '->>'=>7,
+        '->'=>7,
         'IS' => 7,
         'LIKE' => 7,
         'NOT LIKE' => 7,

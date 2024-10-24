@@ -105,7 +105,9 @@ final class BinaryOperatorEvaluator
                 }
 
                 return (int) $expr->negated;
-
+            case '->':
+            case '->>':
+                return JsonOperatorEvaluator::evaluate($conn, $scope, $expr,$row, $result);
             case '=':
             case '<>':
             case '!=':

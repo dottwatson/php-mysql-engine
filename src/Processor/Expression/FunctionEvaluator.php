@@ -15,6 +15,18 @@ use Vimeo\MysqlEngine\TokenType;
 
 final class FunctionEvaluator
 {
+
+    protected static $extensions = [];
+
+    public static function extends($className)
+    {
+        if(!in_array($className,static::$extensions)){
+            static::$extensions[] = $className;
+        }
+    } 
+
+    
+    
     /**
      * @param array<string, mixed> $row
      * @param array<string, Column> $columns
@@ -116,8 +128,18 @@ final class FunctionEvaluator
                 return self::sqlInetNtoa($conn, $scope, $expr, $row, $result);
         }
 
+
+        foreach(static::$extensions as $evaluator){
+            $otherEvaluatorResult = $evaluator::evaluate($conn, $scope, $expr, $row, $result);
+            if(!is_a($otherEvaluatorResult,ProcessorException::class)){
+                return $otherEvaluatorResult;
+            }
+        }
+
         throw new ProcessorException("Function " . $expr->functionName . " not implemented yet");
     }
+
+
 
     /**
      * @param  array<string, Column> $columns
