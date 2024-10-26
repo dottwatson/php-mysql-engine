@@ -284,10 +284,12 @@ final class BinaryOperatorEvaluator
                 $pattern = \preg_quote($pattern, '/');
                 $pattern = \preg_replace('/(?<!\\\\)%/', '.*?', $pattern);
                 $pattern = \preg_replace('/(?<!\\\\)_/', '.', $pattern);
-                $regex = '/' . $start_pattern . $pattern . $end_pattern . '/s';
+                
+                $case_insensitive = static::isInsensitive($conn, $scope,$row);
 
+                $regex = '/' . $start_pattern . $pattern . $end_pattern . '/s'.(($case_insensitive)?'i':'');
+                
                 return ((bool) \preg_match($regex, $left_string) ? 1 : 0) ^ $expr->negatedInt;
-
             case 'IS':
                 $r_value = Evaluator::evaluate($conn, $scope, $right, $row, $result);
 
@@ -537,5 +539,42 @@ final class BinaryOperatorEvaluator
         }
 
         return \strpos((string) $val, '.') !== false ? (double) $val : (int) $val;
+    }
+
+
+    
+    protected static function isInsensitive(
+        \Vimeo\MysqlEngine\FakePdoInterface $conn,
+        Scope $scope,
+        array $row,
+    )
+    {
+        if(method_exists($conn,'getDatabaseDefinition')){
+            /**
+             * @var \Fpdo\Definitions\Database;
+             */
+            $database = $conn->getDatabaseDefinition();
+            if($row){
+                $tables = $database->getTablesInstances();
+                $key    = array_key_first($row);            
+                list($rowTableName,$other) = explode('.',$key,2);
+
+                foreach($tables as $tableName=>$tableInstance){
+                    if($tableName == $rowTableName){
+                        $collation = $tableInstance->getCollation();
+                        break;
+                    }
+                }
+            }
+
+            if(!isset($collaltion)){
+                $collation = $database->getCollation();
+            }
+        }
+        else{
+            $collation = '';
+        }
+
+        return preg_match('#_ci$#',strtolower(trim($collation)));
     }
 }
