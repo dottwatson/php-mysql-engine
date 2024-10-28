@@ -18,14 +18,20 @@
     "ext-pdo": "*",
     "nyholm/dsn": "^2.0",
     "symfony/polyfill-php73": "^1.22",
-    "dottwatson/simple-data":"@dev",
-    "justinrainbow/json-schema":"*"
+    "dottwatson/simple-data": "^1.0",
+    "justinrainbow/json-schema": "*"
   },
   "autoload": {
     "psr-4": {
-        "Vimeo\\MysqlEngine\\": "src"
+      "Vimeo\\MysqlEngine\\": "src"
     }
   },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/dottwatson/simple-data"
+    }
+  ],
   "require-dev": {
     "vimeo/psalm": "^4.6",
     "squizlabs/php_codesniffer": "^3.5",
