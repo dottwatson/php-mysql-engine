@@ -1,7 +1,7 @@
 {
   "name": "dottwatson/php-mysql-engine",
   "description": "A MySQL engine written in PHP for speeding up tests",
-  "type": "library",
+  "type": "library", 
   "license": "MIT",
   "authors": [
     {
