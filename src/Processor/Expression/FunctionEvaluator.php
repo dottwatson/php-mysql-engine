@@ -126,6 +126,11 @@ final class FunctionEvaluator
                 return self::sqlInetAton($conn, $scope, $expr, $row, $result);
             case 'INET_NTOA':
                 return self::sqlInetNtoa($conn, $scope, $expr, $row, $result);
+            case 'RAND':
+                $randomNumber = mt_rand(0, mt_getrandmax());
+                $floatNumber = $randomNumber / mt_getrandmax();
+
+                return round($floatNumber, 16);
         }
 
 
@@ -320,7 +325,7 @@ final class FunctionEvaluator
             case 'DAY':
             case 'WEEKDAY':
                 return new Column\IntColumn(false, 10);
-        }
+            }
 
         // default type, a cop-out
         return new Column\Varchar(255);
